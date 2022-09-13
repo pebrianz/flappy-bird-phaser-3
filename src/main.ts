@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import GameScene, { GameStart } from "./GameScene";
+import GameScene, { GameStart, GameOver } from "./GameScene";
 import "./style.css";
 
 const config = {
@@ -22,7 +22,7 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [GameScene, GameStart],
+  scene: [GameScene, GameStart, GameOver],
 };
 
 export default new Phaser.Game(config);

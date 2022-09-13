@@ -105,14 +105,20 @@ export default class GameScene extends Phaser.Scene {
     if (frameCount % 120 === 0) {
       this.pipes.push(new Pipe(this, "pipe"));
     }
-    if (this.bird.offscreen()) {
-      this.bird.reset();
-    }
     for (const pipe of this.pipes) {
       pipe.update();
       this.bird.bird.setOnCollideWith(pipe.sensor, () => {
         this.score += 1;
         this.scoreboard.setText(`${this.score}`);
+      });
+      this.bird.bird.setOnCollideWith(pipe.pipeTop, () => {
+        this.scene.launch("game-over");
+      });
+      this.bird.bird.setOnCollideWith(pipe.pipeBottom, () => {
+        this.scene.launch("game-over");
+      });
+      this.bird.bird.setOnCollideWith(this.ground, () => {
+        this.scene.launch("game-over");
       });
     }
     const fps = this.game.loop.actualFps.toFixed(0);
@@ -121,13 +127,66 @@ export default class GameScene extends Phaser.Scene {
 }
 
 export class GameStart extends Phaser.Scene {
+  aGrid!: AlignGrid;
+  align!: Align;
+  gamestart: Phaser.GameObjects.Image | null;
   constructor() {
     super("game-start");
+    this.gamestart = null;
+  }
+  init() {
+    this.aGrid = new AlignGrid({
+      scene: this,
+      rows: 11,
+      cols: 11,
+      height: innerHeight,
+      width: innerWidth,
+    });
+    this.align = new Align(this);
+  }
+  preload() {
+    this.load.image("gamestart", "assets/message.png");
   }
   create() {
+    this.gamestart = this.add.image(
+      innerWidth / 2,
+      innerHeight / 2,
+      "gamestart"
+    );
+    this.align.scaleToGameH(this.gamestart, 0.35);
     this.input.on("pointerdown", () => {
       console.log("hello world");
+      this.gamestart?.destroy();
       this.scene.resume("game-scene");
     });
+  }
+}
+
+export class GameOver extends Phaser.Scene {
+  aGrid!: AlignGrid;
+  align!: Align;
+  constructor() {
+    super("game-over");
+  }
+  init() {
+    this.aGrid = new AlignGrid({
+      scene: this,
+      rows: 11,
+      cols: 11,
+      height: innerHeight,
+      width: innerWidth,
+    });
+    this.align = new Align(this);
+  }
+  preload() {
+    this.load.image("gameover", "assets/gameover.png");
+  }
+  create() {
+    const gameover = this.add.image(
+      innerWidth / 2,
+      innerHeight / 2,
+      "gameover"
+    );
+    this.align.scaleToGameH(gameover, 0.06);
   }
 }
