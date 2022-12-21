@@ -1,12 +1,16 @@
+import { BodyType } from "matter";
 import Phaser from "phaser";
+import GameScene from "./GameScene";
 
 export default class Bird {
-  scene: Phaser.Scene | any;
+  scene: GameScene;
   bird: Phaser.Physics.Matter.Sprite;
-  constructor(scene: Phaser.Scene | any, texture: any) {
+  constructor(scene: GameScene, texture: any) {
     this.scene = scene;
+
     const { birddownflap, birdmidflap, birdupflap } = texture;
-    this.bird = scene.matter.add.sprite(0, 0, birddownflap, 0);
+
+    this.bird = scene.matter.add.sprite(0, 0, birdupflap, 0);
     this.bird.setBody({
       type: "circle",
       radius: 10,
@@ -31,25 +35,10 @@ export default class Bird {
     });
   }
   fly() {
-    this.scene.matter.body.setVelocity(this.bird.body, {
+    this.scene.matter.body.setVelocity(this.bird.body as BodyType, {
       x: 0,
       y: (innerHeight * -1.2) / 100,
     });
     this.bird.play("fly");
-  }
-  offscreen() {
-    if (this.bird.x < -this.bird.width * 6) {
-      return true;
-    }
-    if (this.bird.x > innerWidth + this.bird.width * 6) {
-      return true;
-    }
-    if (this.bird.y > innerHeight + this.bird.height * 10) {
-      return true;
-    }
-    return false;
-  }
-  reset() {
-    this.scene.aGrid.placeAt(4, 0, this.bird);
   }
 }

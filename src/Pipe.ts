@@ -1,14 +1,16 @@
+import { BodyType } from "matter";
 import Phaser from "phaser";
+import GameScene from "./GameScene";
 
 export default class Pipe {
-  scene: Phaser.Scene | any;
+  scene: GameScene;
   posYTop: number;
   space: number;
   posYBottom;
-  pipeTop: Phaser.Physics.Matter.Sprite | any;
-  pipeBottom: Phaser.Physics.Matter.Sprite | any;
-  sensor: Phaser.Physics.Matter.Factory | any;
-  constructor(scene: Phaser.Scene, texture: string) {
+  pipeTop: Phaser.Physics.Matter.Sprite;
+  pipeBottom: Phaser.Physics.Matter.Sprite;
+  sensor: MatterJS.BodyType;
+  constructor(scene: GameScene, texture: string) {
     this.scene = scene;
     const options = {
       isStatic: true,
@@ -46,11 +48,11 @@ export default class Pipe {
     this.scene.align.scaleToGameH(this.sensor, 0.8);
   }
   update() {
-    this.scene.matter.body.translate(this.pipeTop.body, {
+    this.scene.matter.body.translate(this.pipeTop.body as BodyType, {
       x: (innerWidth * -0.8) / 100,
       y: 0,
     });
-    this.scene.matter.body.translate(this.pipeBottom.body, {
+    this.scene.matter.body.translate(this.pipeBottom.body as BodyType, {
       x: (innerWidth * -0.8) / 100,
       y: 0,
     });

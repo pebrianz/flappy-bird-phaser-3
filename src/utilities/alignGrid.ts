@@ -1,24 +1,19 @@
 import Phaser from "phaser";
 
+interface IConfig {
+  scene: Phaser.Scene;
+  rows: number;
+  cols: number;
+  height: number;
+  width: number;
+}
+
 export default class AlignGrid {
-  config: {
-    scene: Phaser.Scene;
-    rows: number;
-    cols: number;
-    height: number;
-    width: number;
-  };
   scene!: Phaser.Scene;
   cw!: number;
   ch!: number;
-  graphics: any;
-  constructor(config: {
-    scene: Phaser.Scene;
-    rows: number;
-    cols: number;
-    height: number;
-    width: number;
-  }) {
+  graphics!: Phaser.GameObjects.Graphics;
+  constructor(public config: IConfig) {
     this.config = config;
     this.scene = config.scene;
     //cell width

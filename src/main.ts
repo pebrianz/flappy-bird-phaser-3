@@ -1,5 +1,7 @@
 import Phaser from "phaser";
-import GameScene, { GameStart, GameOver } from "./GameScene";
+import GameScene from "./GameScene";
+import GameStart from "./GameStart";
+import GameOver from "./GameOver";
 import "./style.css";
 
 const config = {
@@ -13,7 +15,7 @@ const config = {
       gravity: {
         y: (innerHeight * 0.16) / 100,
       },
-      //      debug: true,
+      // debug: true,
     },
   },
   scale: {
