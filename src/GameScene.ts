@@ -5,16 +5,15 @@ import Pipe from "./Pipe";
 import Bird from "./Bird";
 
 export default class GameScene extends Phaser.Scene {
-  aGrid!: AlignGrid;
-  align!: Align;
-  pipe!: Pipe;
-  bird!: Bird;
-  pipes!: Array<Pipe>;
-  bg!: Phaser.GameObjects.Image;
-  ground!: Phaser.Physics.Matter.Image;
-  score!: number;
-  fps!: Phaser.GameObjects.Text;
-  scoreboard!: Phaser.GameObjects.Text;
+  public aGrid!: AlignGrid;
+  public align!: Align;
+  private bird!: Bird;
+  private pipes!: Array<Pipe>;
+  private bg!: Phaser.GameObjects.Image;
+  private ground!: Phaser.Physics.Matter.Image;
+  private score!: number;
+  private fps!: Phaser.GameObjects.Text;
+  private scoreboard!: Phaser.GameObjects.Text;
   constructor() {
     super("game-scene");
   }

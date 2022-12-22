@@ -1,21 +1,12 @@
 import Phaser from "phaser";
 import Align from "./utilities/align";
-import AlignGrid from "./utilities/alignGrid";
 
 export default class GameOver extends Phaser.Scene {
-  aGrid!: AlignGrid;
   align!: Align;
   constructor() {
     super("game-over");
   }
   init() {
-    this.aGrid = new AlignGrid({
-      scene: this,
-      rows: 11,
-      cols: 11,
-      height: innerHeight,
-      width: innerWidth,
-    });
     this.align = new Align(this);
   }
   preload() {

@@ -3,8 +3,8 @@ import Phaser from "phaser";
 import GameScene from "./GameScene";
 
 export default class Bird {
-  scene: GameScene;
-  bird: Phaser.Physics.Matter.Sprite;
+  private readonly scene: GameScene;
+  readonly bird: Phaser.Physics.Matter.Sprite;
   constructor(scene: GameScene, texture: any) {
     this.scene = scene;
 

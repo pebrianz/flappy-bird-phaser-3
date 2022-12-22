@@ -3,13 +3,13 @@ import Phaser from "phaser";
 import GameScene from "./GameScene";
 
 export default class Pipe {
-  scene: GameScene;
-  posYTop: number;
-  space: number;
-  posYBottom;
-  pipeTop: Phaser.Physics.Matter.Sprite;
-  pipeBottom: Phaser.Physics.Matter.Sprite;
-  sensor: MatterJS.BodyType;
+  private readonly scene: GameScene;
+  readonly posYTop: number;
+  readonly space: number;
+  readonly posYBottom: number;
+  readonly pipeTop: Phaser.Physics.Matter.Sprite;
+  readonly pipeBottom: Phaser.Physics.Matter.Sprite;
+  readonly sensor: MatterJS.BodyType;
   constructor(scene: GameScene, texture: string) {
     this.scene = scene;
     const options = {

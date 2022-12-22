@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 
 export default class Align {
-  width: number;
-  height: number;
-  constructor(public scene: Phaser.Scene) {
+  private readonly width: number;
+  private readonly height: number;
+  constructor(private readonly scene: Phaser.Scene) {
     this.width = this.scene.game.config.width as number;
     this.height = this.scene.game.config.height as number;
   }

@@ -1,22 +1,13 @@
 import Phaser from "phaser";
 import Align from "./utilities/align";
-import AlignGrid from "./utilities/alignGrid";
 
 export default class GameStart extends Phaser.Scene {
-  aGrid!: AlignGrid;
-  align!: Align;
-  gamestart!: Phaser.GameObjects.Image;
+  private align!: Align;
+  private gamestart!: Phaser.GameObjects.Image;
   constructor() {
     super("game-start");
   }
   init() {
-    this.aGrid = new AlignGrid({
-      scene: this,
-      rows: 11,
-      cols: 11,
-      height: innerHeight,
-      width: innerWidth,
-    });
     this.align = new Align(this);
   }
   preload() {
