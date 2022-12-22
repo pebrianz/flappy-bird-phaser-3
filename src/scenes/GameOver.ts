@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import Align from "./utilities/align";
+import Align from "../utilities/align";
 
 export default class GameOver extends Phaser.Scene {
   align!: Align;

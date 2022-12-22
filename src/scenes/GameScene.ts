@@ -1,8 +1,8 @@
 import Phaser from "phaser";
-import AlignGrid from "./utilities/alignGrid";
-import Align from "./utilities/align";
-import Pipe from "./Pipe";
-import Bird from "./Bird";
+import AlignGrid from "../utilities/alignGrid";
+import Align from "../utilities/align";
+import Pipe from "../gameobjects/Pipe";
+import Bird from "../gameobjects/Bird";
 
 export default class GameScene extends Phaser.Scene {
   public aGrid!: AlignGrid;

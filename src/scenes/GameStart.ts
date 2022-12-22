@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import Align from "./utilities/align";
+import Align from "../utilities/align";
 
 export default class GameStart extends Phaser.Scene {
   private align!: Align;

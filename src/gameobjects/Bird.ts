@@ -1,6 +1,6 @@
 import { BodyType } from "matter";
 import Phaser from "phaser";
-import GameScene from "./GameScene";
+import GameScene from "../scenes/GameScene";
 
 export default class Bird {
   private readonly scene: GameScene;

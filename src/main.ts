@@ -1,7 +1,7 @@
 import Phaser from "phaser";
-import GameScene from "./GameScene";
-import GameStart from "./GameStart";
-import GameOver from "./GameOver";
+import GameScene from "./scenes/GameScene";
+import GameStart from "./scenes/GameStart";
+import GameOver from "./scenes/GameOver";
 import "./style.css";
 
 const config = {
