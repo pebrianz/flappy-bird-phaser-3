@@ -23,7 +23,7 @@ export default class GameStart extends Phaser.Scene {
     this.input.on("pointerdown", () => {
       this.gamestart.destroy();
       this.scene.resume("game-scene");
-      this.scene.remove();
+      this.scene.stop("game-start");
     });
   }
 }

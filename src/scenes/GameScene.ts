@@ -39,7 +39,6 @@ export default class GameScene extends Phaser.Scene {
   }
   create() {
     this.bg = this.add.image(0, 0, "background");
-    this.align.center(this.bg);
     this.align.scaleToGameH(this.bg, 0.9);
     this.aGrid.placeAt(5, 4, this.bg);
 
@@ -92,15 +91,15 @@ export default class GameScene extends Phaser.Scene {
         this.scoreboard.setText(`${this.score}`);
       });
       this.bird.bird.setOnCollideWith(pipe.pipeTop, () => {
-        this.game.input.enabled = false;
+        this.input.enabled = false;
         this.scene.launch("game-over");
       });
       this.bird.bird.setOnCollideWith(pipe.pipeBottom, () => {
-        this.game.input.enabled = false;
+        this.input.enabled = false;
         this.scene.launch("game-over");
       });
       this.bird.bird.setOnCollideWith(this.ground, () => {
-        this.game.input.enabled = false;
+        this.input.enabled = false;
         this.scene.launch("game-over");
       });
     }
