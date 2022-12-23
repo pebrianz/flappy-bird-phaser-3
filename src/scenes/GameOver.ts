@@ -19,9 +19,9 @@ export default class GameOver extends Phaser.Scene {
     this.align = new Align(this);
   }
   preload() {
-    this.load.image("scoreboard", "assets/scoreboard.png");
-    this.load.image("gameover", "assets/gameover.png");
-    this.load.image("replay", "assets/replay.png");
+    this.load.image("scoreboard", "assets/UI/scoreboard.png");
+    this.load.image("gameover", "assets/UI/gameover.png");
+    this.load.image("replay", "assets/UI/replay.png");
   }
   create() {
     const gameover = this.add.image(0, 0, "scoreboard");

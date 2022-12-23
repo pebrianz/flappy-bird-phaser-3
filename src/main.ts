@@ -2,7 +2,6 @@ import Phaser from "phaser";
 import GameScene from "./scenes/GameScene";
 import GameStart from "./scenes/GameStart";
 import GameOver from "./scenes/GameOver";
-import "./style.css";
 
 const config = {
   type: Phaser.AUTO,
@@ -15,7 +14,7 @@ const config = {
       gravity: {
         y: (innerHeight * 0.16) / 100,
       },
-      // debug: true,
+      //debug: true,
     },
   },
   scale: {

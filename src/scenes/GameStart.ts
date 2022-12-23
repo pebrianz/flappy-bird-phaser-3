@@ -11,7 +11,7 @@ export default class GameStart extends Phaser.Scene {
     this.align = new Align(this);
   }
   preload() {
-    this.load.image("gamestart", "assets/message.png");
+    this.load.image("gamestart", "assets/UI/message.png");
   }
   create() {
     this.gamestart = this.add.image(
