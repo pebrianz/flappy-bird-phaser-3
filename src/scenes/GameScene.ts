@@ -1,144 +1,171 @@
-import Phaser from "phaser";
-import AlignGrid from "../utilities/alignGrid";
-import Align from "../utilities/align";
-import Pipe from "../gameobjects/Pipe";
-import Bird from "../gameobjects/Bird";
 import { BodyType } from "matter";
+import Phaser from "phaser";
+
+import Align from "../utilities/align";
+import AlignGrid from "../utilities/alignGrid";
+import Bird, { FramesKey } from "../gameobjects/Bird";
+import Ground from "../gameobjects/Ground";
+import Obstacle from "../gameobjects/Obstacle";
 
 export default class GameScene extends Phaser.Scene {
-  public aGrid!: AlignGrid;
-  public align!: Align;
-  private bird!: Bird;
-  private pipes!: Array<Pipe>;
-  private bg!: Phaser.GameObjects.TileSprite;
-  private ground1!: Phaser.Physics.Matter.Sprite;
-  private ground2!: Phaser.Physics.Matter.Image;
+  gameWidth = 0;
+  gameHeight = 0;
+  aGrid!: AlignGrid;
+  align!: Align;
+  bg!: Phaser.GameObjects.TileSprite;
+  bird!: Bird;
+  obstacles!: Array<Obstacle>;
+  ground!: Ground;
+  fps!: Phaser.GameObjects.Text;
   private score!: number;
-  private fps!: Phaser.GameObjects.Text;
-  private rnd = Phaser.Math.RND;
-  private scoreGroup!: Phaser.GameObjects.Group;
+  private bestScore!: number;
+  scoreGroup!: Phaser.GameObjects.Group;
+  rnd = Phaser.Math.RND;
   constructor() {
     super("game-scene");
   }
   init() {
+    this.gameWidth = this.game.config.width as number;
+    this.gameHeight = this.game.config.height as number;
     this.aGrid = new AlignGrid({
       scene: this,
       rows: 11,
       cols: 11,
-      height: innerHeight,
-      width: innerWidth,
+      width: this.gameWidth,
+      height: this.gameHeight,
     });
     this.align = new Align(this);
-    this.pipes = [];
+    this.obstacles = [];
     this.score = 0;
+    this.bestScore = Number(localStorage.getItem("best-score")) || 0;
+    this.scoreGroup = this.add.group();
   }
   preload() {
     this.load.image("background", "assets/GameObjects/background.png");
+    this.load.image("birddownflap", "assets/GameObjects/birddownflap.png");
+    this.load.image("birdmidflap", "assets/GameObjects/birdmidflap.png");
+    this.load.image("birdupflap", "assets/GameObjects/birdupflap.png");
     this.load.image("ground", "assets/GameObjects/base.png");
     this.load.image("pipe", "assets/GameObjects/pipe.png");
-    this.load.image(
-      "birddownflap",
-      "assets/GameObjects/yellowbird-downflap.png"
-    );
-    this.load.image("birdmidflap", "assets/GameObjects/yellowbird-midflap.png");
-    this.load.image("birdupflap", "assets/GameObjects/yellowbird-upflap.png");
     for (let i = 0; i <= 9; i++) {
       this.load.image(`digit${i}`, `assets/UI/Numbers/${i}.png`);
     }
+    this.load.image("scoreboard", "assets/UI/scoreboard.png");
+    this.load.image("gameover", "assets/UI/gameover.png");
+    this.load.image("replay", "assets/UI/replay.png");
   }
   create() {
     this.bg = this.add.tileSprite(0, 0, 0, 0, "background");
-    this.align.scaleToGameH(this.bg, 0.9);
+    this.align.scaleToGameHeight(this.bg, 0.9);
     this.aGrid.placeAt(5, 4, this.bg);
 
-    this.bird = new Bird(this, {
-      birddownflap: "birddownflap",
-      birdmidflap: "birdmidflap",
+    const framesKey: FramesKey = {
       birdupflap: "birdupflap",
-    });
+      birdmidflap: "birdmidflap",
+      birddownflap: "birddownflap",
+    };
+    this.bird = new Bird(this, this.matter.world, "birdupflap", framesKey);
+    this.bird.scaleToGameHeight(0.045);
+    this.aGrid.placeAt(2, 2, this.bird);
+
+    this.bird.setFixedRotation();
 
     this.input.on("pointerdown", () => {
       this.bird.fly();
     });
 
-    this.ground1 = this.matter.add.sprite(0, 0, "ground", 0, {
+    this.ground = new Ground(this, "ground");
+    this.ground.sprite.depth = 1;
+    // upper limit
+    this.matter.add.rectangle(this.gameWidth / 2, -40, this.gameWidth, 80, {
       isStatic: true,
     });
-    this.ground1.depth = 10;
-    this.align.scaleToGameW(this.ground1, 1);
-    this.aGrid.placeAtOriginBottom(5, 11, this.ground1);
 
-    this.ground2 = this.matter.add.sprite(0, 0, "ground", 0, {
-      isStatic: true,
-    });
-    this.ground2.depth = 10;
-    this.align.center(this.ground2);
-    this.align.scaleToGameW(this.ground2, 1);
-    this.aGrid.placeAtOriginBottom(16, 11, this.ground2);
-
-    this.scoreGroup = this.add.group();
-    let digit = this.add.image(0, 0, `digit0`);
-    this.align.scaleToGameH(digit, 0.04);
+    const digit = this.add.image(0, 0, `digit0`);
+    digit.depth = 2;
+    this.align.scaleToGameHeight(digit, 0.04);
     this.aGrid.placeAt(5, 0.5, digit);
-    digit.depth = 12;
     this.scoreGroup.add(digit);
 
     this.fps = this.add.text(0, 0, "", {
       font: "600 1rem sans-serif",
       color: "#000000",
     });
-    this.align.scaleToGameH(this.fps, 0.025);
+    this.fps.depth = 3;
     this.aGrid.placeAt(0.5, 0.25, this.fps);
-    this.fps.depth = 11;
+    this.align.scaleToGameHeight(this.fps, 0.025);
 
     this.scene.pause();
     this.scene.launch("game-start");
+
+    // this.aGrid.show()
+    // this.aGrid.showNumbers();
   }
   update() {
-    this.bg.tilePositionX -= (innerWidth * -0.2) / 100;
+    this.bg.tilePositionX -= (this.gameWidth / 1000) * -2;
+    this.ground.sprite.tilePositionX -= (this.gameWidth / 1000) * -6;
 
-    this.matter.body.translate(this.ground1.body as BodyType, {
-      x: (innerWidth * -0.8) / 100,
-      y: 0,
-    });
-    this.matter.body.translate(this.ground2.body as BodyType, {
-      x: (innerWidth * -0.8) / 100,
-      y: 0,
-    });
-    if (this.ground1.x < -innerWidth / 2) {
-      this.aGrid.placeAtOriginBottom(16, 11, this.ground1);
-    }
-    if (this.ground2.x < -innerWidth / 2) {
-      this.aGrid.placeAtOriginBottom(16, 11, this.ground2);
-    }
     const frameCount = this.game.getFrame();
-    if (frameCount % this.rnd.pick([75, 150]) === 0) {
-      this.pipes.push(new Pipe(this, "pipe"));
+    if (frameCount % this.rnd.pick([75, 150]) == 0) {
+      this.obstacles.push(new Obstacle(this, "pipe"));
     }
-    for (const pipe of this.pipes) {
-      pipe.update();
-      this.bird.bird.setOnCollideWith(pipe.sensor, () => {
-        this.score += 1;
-        this.scoreGroup.clear(true);
-        let digits = this.score.toString().split("");
-        for (let i = 0; i < digits.length; i++) {
-          let digit = this.add.image(0, 0, `digit${digits[i]}`);
-          this.align.scaleToGameH(digit, 0.04);
-          this.aGrid.placeAt(5, 0.5, digit);
-          digit.depth = 12;
-          digit.x += (digit.displayHeight / 2) * i;
-          this.scoreGroup.add(digit);
-        }
+    for (const obstacle of this.obstacles) {
+      obstacle.update();
+      this.bird.setOnCollideWith(obstacle.sensor, () => {
+        this.updateScore();
       });
-      this.bird.bird.setOnCollideWith(
-        [this.ground1, this.ground2, pipe.pipeTop, pipe.pipeBottom],
-        () => {
-          this.input.enabled = false;
-          this.scene.launch("game-over");
-        }
-      );
+      this.bird.setOnCollideWith([this.ground], () => {
+        this.gameover();
+      });
     }
+    this.bestScore = this.updateBestScore();
     const fps = this.game.loop.actualFps.toFixed(0);
     this.fps.setText(`FPS: ${fps}`);
+  }
+  gameover() {
+    this.input.enabled = false;
+    this.matter.body.setInertia(this.bird.body as BodyType, this.bird.inertia);
+    this.scene.launch("game-over", {
+      bestScore: this.bestScore,
+      score: this.score,
+    });
+  }
+  updateBestScore() {
+    this.bestScore = Number(localStorage.getItem("best-score"));
+    if (this.score > this.bestScore) {
+      localStorage.setItem("best-score", `${this.score}`);
+      return this.score;
+    }
+    return this.bestScore;
+  }
+  updateScore() {
+    this.score += 1;
+    this.scoreGroup.clear(true);
+
+    const score = this.score.toString().split("");
+    score.map((value) => {
+      let digit = this.matter.add.image(0, 0, `digit${value}`, 0, {
+        isSensor: true,
+        isStatic: true,
+      });
+      this.align.scaleToGameHeight(digit, 0.04);
+      this.aGrid.placeAt(5, 0.5, digit);
+      digit.depth = 2;
+      this.scoreGroup.add(digit);
+    });
+
+    const digits = this.scoreGroup.getChildren();
+    digits.map((value, index) => {
+      let digit = value as Phaser.Physics.Matter.Image;
+      let digitBody = digit.body as BodyType;
+      let digitWidth = digitBody.bounds.max.x - digitBody.bounds.min.x;
+      if (digits[index - 1]) {
+        let prevDigit = digits[index - 1] as Phaser.Physics.Matter.Image;
+        let prevDigitBody = prevDigit.body as BodyType;
+        let prevDigitWidth =
+          prevDigitBody.bounds.max.x - prevDigitBody.bounds.min.x;
+        digit.x = prevDigit.x + prevDigitWidth / 2 + digitWidth / 2;
+      }
+    });
   }
 }

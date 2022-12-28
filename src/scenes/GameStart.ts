@@ -1,9 +1,10 @@
 import Phaser from "phaser";
+
 import Align from "../utilities/align";
 
 export default class GameStart extends Phaser.Scene {
-  private align!: Align;
-  private gamestart!: Phaser.GameObjects.Image;
+  align!: Align;
+  gamestart!: Phaser.GameObjects.Image;
   constructor() {
     super("game-start");
   }
@@ -14,12 +15,10 @@ export default class GameStart extends Phaser.Scene {
     this.load.image("gamestart", "assets/UI/message.png");
   }
   create() {
-    this.gamestart = this.add.image(
-      innerWidth / 2,
-      innerHeight / 2,
-      "gamestart"
-    );
-    this.align.scaleToGameH(this.gamestart, 0.35);
+    this.gamestart = this.add.image(0, 0, "gamestart");
+    this.align.center(this.gamestart);
+    this.align.scaleToGameHeight(this.gamestart, 0.35);
+
     this.input.on("pointerdown", () => {
       this.gamestart.destroy();
       this.scene.resume("game-scene");

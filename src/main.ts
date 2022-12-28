@@ -1,9 +1,10 @@
 import Phaser from "phaser";
+
 import GameScene from "./scenes/GameScene";
 import GameStart from "./scenes/GameStart";
 import GameOver from "./scenes/GameOver";
 
-const config = {
+const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: "game",
   pixelArt: true,
@@ -12,7 +13,7 @@ const config = {
     default: "matter",
     matter: {
       gravity: {
-        y: (innerHeight * 0.16) / 100,
+        y: (window.innerHeight / 1000) * 2.2,
       },
       //debug: true,
     },

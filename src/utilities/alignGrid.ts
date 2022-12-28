@@ -9,11 +9,11 @@ interface IConfig {
 }
 
 export default class AlignGrid {
-  private readonly scene!: Phaser.Scene;
-  private readonly cw!: number;
-  private readonly ch!: number;
+  private readonly scene: Phaser.Scene;
+  private readonly cw: number;
+  private readonly ch: number;
   private graphics!: Phaser.GameObjects.Graphics;
-  constructor(private readonly config: IConfig) {
+  constructor(public readonly config: IConfig) {
     this.config = config;
     this.scene = config.scene;
     //cell width
@@ -38,8 +38,17 @@ export default class AlignGrid {
 
     this.graphics.strokePath();
   }
-  height(yy: any) {
+  /**
+   * calc height based on cellheight
+   */
+  height(yy: number) {
     return this.ch * yy + this.ch / 2;
+  }
+  /**
+   * calc width based on cellwidth
+   */
+  width(xx: number) {
+    return this.cw * xx + this.cw / 2;
   }
   placeAt(xx: number, yy: any, obj: any) {
     //calc position based upon the cellwidth and cellheight
@@ -49,30 +58,32 @@ export default class AlignGrid {
     obj.x = x2;
     obj.y = y2;
   }
-  placeAtOriginTop(xx: number, yy: number, obj: any) {
+  placeBodyAt(scene: any, xx: number, yy: any, obj: any) {
     var x2 = this.cw * xx + this.cw / 2;
     var y2 = this.ch * yy + this.ch / 2;
+
+    scene.matter.body.setPosition(obj, {
+      x: x2,
+      y: y2,
+    });
+  }
+  placeAtByOriginTop(xx: number, yy: number, obj: any) {
+    var x2 = this.cw * xx + this.cw / 2;
+    var y2 = this.ch * yy + this.ch / 2;
+
     var height = obj.body.bounds.max.y - obj.body.bounds.min.y;
     var h = height / 2;
+
     obj.x = x2;
     obj.y = y2 + h;
   }
+  placeAtByOriginBottom(xx: number, yy: number, obj: any) {
+    var x2 = this.cw * xx + this.cw / 2;
+    var y2 = this.ch * yy + this.ch / 2;
 
-  placeAtOriginTops(scene: any, xx: number, yy: number, obj: any) {
-    var x2 = this.cw * xx + this.cw / 2;
-    var y2 = this.ch * yy + this.ch / 2;
-    var height = obj.bounds.max.y - obj.bounds.min.y;
-    var h = height / 2;
-    scene.matter.body.setPosition(obj, {
-      x: x2,
-      y: y2 + h,
-    });
-  }
-  placeAtOriginBottom(xx: number, yy: number, obj: any) {
-    var x2 = this.cw * xx + this.cw / 2;
-    var y2 = this.ch * yy + this.ch / 2;
     var height = obj.body.bounds.max.y - obj.body.bounds.min.y;
     var h = height / 2;
+
     obj.x = x2;
     obj.y = y2 - h;
   }

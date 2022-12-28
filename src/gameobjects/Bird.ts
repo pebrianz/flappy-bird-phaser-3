@@ -1,44 +1,61 @@
 import { BodyType } from "matter";
 import Phaser from "phaser";
+
 import GameScene from "../scenes/GameScene";
 
-export default class Bird {
-  private readonly scene: GameScene;
-  readonly bird: Phaser.Physics.Matter.Sprite;
-  constructor(scene: GameScene, texture: any) {
-    this.scene = scene;
+export type FramesKey = {
+  birdupflap: string;
+  birdmidflap: string;
+  birddownflap: string;
+};
 
-    const { birddownflap, birdmidflap, birdupflap } = texture;
+export default class Bird extends Phaser.Physics.Matter.Sprite {
+  public inertia = 0;
+  constructor(
+    public scene: GameScene,
+    public world: Phaser.Physics.Matter.World,
+    public texture: any,
+    public framesKey: FramesKey,
+    public options?: Phaser.Types.Physics.Matter.MatterBodyConfig
+  ) {
+    super(world, 0, 0, texture, 0, options);
+    const { birdupflap, birdmidflap, birddownflap } = framesKey;
 
-    this.bird = scene.matter.add.sprite(0, 0, birdupflap, 0);
-    this.bird.setBody({
+    this.setBody({
       type: "circle",
       radius: 10,
     });
 
-    this.bird.setFixedRotation();
+    const body = this.body as BodyType;
+    this.inertia = body.inertia;
 
-    scene.align.scaleToGameH(this.bird, 0.045);
-    scene.aGrid.placeAt(2, 2, this.bird);
+    const frames = [
+      { key: birdupflap },
+      { key: birdmidflap },
+      { key: birddownflap },
+      { key: birdmidflap },
+      { key: birdupflap },
+    ];
 
     scene.anims.create({
       key: "fly",
-      frames: [
-        { key: birdupflap },
-        { key: birdmidflap },
-        { key: birddownflap },
-        { key: birdmidflap },
-        { key: birdupflap },
-      ],
+      frames,
       frameRate: 8,
       repeat: 0,
     });
+    scene.add.existing(this);
+  }
+  scaleToGameHeight(per: number) {
+    this.displayHeight = this.scene.gameHeight * per;
+    this.scaleX = this.scaleY;
+    const body = this.body as BodyType;
+    this.inertia = body.inertia;
   }
   fly() {
-    this.scene.matter.body.setVelocity(this.bird.body as BodyType, {
+    this.scene.matter.body.setVelocity(this.body as BodyType, {
       x: 0,
-      y: (innerHeight * -1.2) / 100,
+      y: (innerHeight / 1000) * -14,
     });
-    this.bird.play("fly");
+    this.play("fly");
   }
 }

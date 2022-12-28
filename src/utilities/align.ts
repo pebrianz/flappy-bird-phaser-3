@@ -1,32 +1,22 @@
 import Phaser from "phaser";
 
 export default class Align {
-  private readonly width: number;
-  private readonly height: number;
+  public readonly gameWidth: number;
+  public readonly gameHeight: number;
   constructor(private readonly scene: Phaser.Scene) {
-    this.width = this.scene.game.config.width as number;
-    this.height = this.scene.game.config.height as number;
+    this.gameWidth = this.scene.game.config.width as number;
+    this.gameHeight = this.scene.game.config.height as number;
   }
-  scaleToGameW(obj: any, per: number) {
-    obj.displayWidth = this.width * per + 4;
+  scaleToGameWidth(obj: any, per: number) {
+    obj.displayWidth = this.gameWidth * per + 4;
     obj.scaleY = obj.scaleX;
   }
-  scaleToGameH(obj: any, per: number) {
-    obj.displayHeight = this.height * per;
+  scaleToGameHeight(obj: any, per: number) {
+    obj.displayHeight = this.gameHeight * per;
     obj.scaleX = obj.scaleY;
   }
-  centerH(obj: any) {
-    obj.x = this.width / 2 - obj.displayWidth / 2;
-  }
-  centerV(obj: any) {
-    obj.y = this.height / 2 - obj.displayHeight / 2;
-  }
-  center2(obj: any) {
-    obj.x = this.width / 2 - obj.displayWidth / 2;
-    obj.y = this.height / 2 - obj.displayHeight / 2;
-  }
   center(obj: any) {
-    obj.x = this.width / 2;
-    obj.y = this.height / 2;
+    obj.x = this.gameWidth / 2;
+    obj.y = this.gameHeight / 2;
   }
 }
