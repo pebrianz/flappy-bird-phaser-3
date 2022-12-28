@@ -114,9 +114,12 @@ export default class GameScene extends Phaser.Scene {
       this.bird.setOnCollideWith(obstacle.sensor, () => {
         this.updateScore();
       });
-      this.bird.setOnCollideWith([this.ground], () => {
-        this.gameover();
-      });
+      this.bird.setOnCollideWith(
+        [this.ground, obstacle.pipeBottom, obstacle.pipeTop],
+        () => {
+          this.gameover();
+        }
+      );
     }
     this.bestScore = this.updateBestScore();
     const fps = this.game.loop.actualFps.toFixed(0);

@@ -85,7 +85,7 @@ export default class GameOver extends Phaser.Scene {
         isSensor: true,
         isStatic: true,
       });
-      this.align.scaleToGameHeight(digit, 0.022);
+      this.align.scaleToGameHeight(digit, 0.024);
       this.aGrid.placeAt(7.3, 4.6, digit);
       digit.depth = 2;
       this.scoreGroup.add(digit);
