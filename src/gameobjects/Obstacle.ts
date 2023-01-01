@@ -9,7 +9,7 @@ export default class Obstacle {
   pipeBottom: Pipe;
   sensor: BodyType;
   sensorHeight = 0;
-  space = 2;
+  space = 2.2;
   speed = 8;
   yy = Math.random() * 6;
   constructor(public scene: GameScene, public texture: string) {
@@ -17,11 +17,20 @@ export default class Obstacle {
       isStatic: true,
     };
     this.pipeTop = new Pipe(scene, scene.matter.world, texture, options);
-    this.pipeTop.scaleToGameHeight(0.8);
-    scene.aGrid.placeAtByOriginBottom(12, this.yy, this.pipeTop);
-
     this.pipeBottom = new Pipe(scene, scene.matter.world, texture, options);
-    this.pipeBottom.scaleToGameHeight(0.8);
+
+    if (this.scene.gameHeight > this.scene.gameWidth * 2) {
+      this.pipeTop.displayWidth = this.scene.gameWidth * 0.16;
+      this.pipeTop.scaleY = this.pipeTop.scaleX;
+      this.pipeBottom.displayWidth = this.scene.gameWidth * 0.16;
+      this.pipeBottom.scaleY = this.pipeBottom.scaleX;
+    } else {
+      this.pipeTop.displayHeight = this.scene.gameHeight * 0.85;
+      this.pipeTop.scaleX = this.pipeTop.scaleY;
+      this.pipeBottom.displayHeight = this.scene.gameHeight * 0.85;
+      this.pipeBottom.scaleX = this.pipeBottom.scaleY;
+    }
+    scene.aGrid.placeAtByOriginBottom(12, this.yy, this.pipeTop);
     scene.aGrid.placeAtByOriginTop(12, this.yy + this.space, this.pipeBottom);
 
     this.sensorHeight = scene.aGrid.height(this.space);

@@ -15,7 +15,7 @@ export default class Pipe extends Phaser.Physics.Matter.Sprite {
   }
   scaleToGameHeight(per: number) {
     this.displayHeight = this.scene.gameHeight * per;
-    this.scaleX = this.scaleY;
+    this.displayWidth = this.scene.gameWidth * 0.14;
   }
   update(speed: number) {
     this.scene.matter.body.translate(this.body as BodyType, {

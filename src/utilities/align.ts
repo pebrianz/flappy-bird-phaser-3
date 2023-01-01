@@ -8,7 +8,7 @@ export default class Align {
     this.gameHeight = this.scene.game.config.height as number;
   }
   scaleToGameWidth(obj: any, per: number) {
-    obj.displayWidth = this.gameWidth * per + 4;
+    obj.displayWidth = this.gameWidth * per;
     obj.scaleY = obj.scaleX;
   }
   scaleToGameHeight(obj: any, per: number) {

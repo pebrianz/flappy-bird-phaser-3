@@ -17,7 +17,8 @@ export default class GameStart extends Phaser.Scene {
   create() {
     this.gamestart = this.add.image(0, 0, "gamestart");
     this.align.center(this.gamestart);
-    this.align.scaleToGameHeight(this.gamestart, 0.35);
+    this.gamestart.displayWidth = innerWidth * 0.45;
+    this.gamestart.scaleY = this.gamestart.scaleX;
 
     this.input.on("pointerdown", () => {
       this.gamestart.destroy();

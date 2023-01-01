@@ -4,7 +4,6 @@ import Phaser from "phaser";
 import Align from "../utilities/align";
 import AlignGrid from "../utilities/alignGrid";
 import Bird, { FramesKey } from "../gameobjects/Bird";
-import Ground from "../gameobjects/Ground";
 import Obstacle from "../gameobjects/Obstacle";
 
 export default class GameScene extends Phaser.Scene {
@@ -15,7 +14,7 @@ export default class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite;
   bird!: Bird;
   obstacles!: Array<Obstacle>;
-  ground!: Ground;
+  ground!: Phaser.Physics.Matter.Sprite;
   fps!: Phaser.GameObjects.Text;
   private score!: number;
   private bestScore!: number;
@@ -50,14 +49,12 @@ export default class GameScene extends Phaser.Scene {
     for (let i = 0; i <= 9; i++) {
       this.load.image(`digit${i}`, `assets/UI/Numbers/${i}.png`);
     }
-    this.load.image("scoreboard", "assets/UI/scoreboard.png");
-    this.load.image("gameover", "assets/UI/gameover.png");
-    this.load.image("replay", "assets/UI/replay.png");
   }
   create() {
     this.bg = this.add.tileSprite(0, 0, 0, 0, "background");
-    this.align.scaleToGameHeight(this.bg, 0.9);
-    this.aGrid.placeAt(5, 4, this.bg);
+    this.bg.displayHeight = this.gameHeight * 0.85;
+    this.bg.scaleX = this.bg.scaleY;
+    this.bg.setOrigin(0, 0);
 
     const framesKey: FramesKey = {
       birdupflap: "birdupflap",
@@ -65,17 +62,34 @@ export default class GameScene extends Phaser.Scene {
       birddownflap: "birddownflap",
     };
     this.bird = new Bird(this, this.matter.world, "birdupflap", framesKey);
-    this.bird.scaleToGameHeight(0.045);
+    if (this.gameHeight > this.gameWidth * 2) {
+      this.bird.displayWidth = this.gameWidth * 0.12;
+      this.bird.scaleY = this.bird.scaleX;
+    } else {
+      this.bird.displayHeight = this.gameHeight * 0.045;
+      this.bird.scaleX = this.bird.scaleY;
+    }
+
     this.aGrid.placeAt(2, 2, this.bird);
-
     this.bird.setFixedRotation();
-
     this.input.on("pointerdown", () => {
       this.bird.fly();
     });
 
-    this.ground = new Ground(this, "ground");
-    this.ground.sprite.depth = 1;
+    this.ground = this.matter.add.sprite(
+      this.gameWidth / 2,
+      this.bg.y + this.bg.displayHeight,
+      "ground",
+      0,
+      {
+        isStatic: true,
+      }
+    );
+    this.ground.displayHeight = this.gameHeight * 0.2;
+    this.ground.scaleX = this.ground.scaleY;
+    this.ground.y += this.ground.displayHeight / 2;
+    this.ground.depth = 1;
+
     // upper limit
     this.matter.add.rectangle(this.gameWidth / 2, -40, this.gameWidth, 80, {
       isStatic: true,
@@ -83,7 +97,7 @@ export default class GameScene extends Phaser.Scene {
 
     const digit = this.add.image(0, 0, `digit0`);
     digit.depth = 2;
-    this.align.scaleToGameHeight(digit, 0.04);
+    digit.scale = 0.91;
     this.aGrid.placeAt(5, 0.5, digit);
     this.scoreGroup.add(digit);
 
@@ -99,11 +113,10 @@ export default class GameScene extends Phaser.Scene {
     this.scene.launch("game-start");
 
     // this.aGrid.show()
-    // this.aGrid.showNumbers();
+    //this.aGrid.showNumbers();
   }
   update() {
     this.bg.tilePositionX -= (this.gameWidth / 1000) * -2;
-    this.ground.sprite.tilePositionX -= (this.gameWidth / 1000) * -6;
 
     const frameCount = this.game.getFrame();
     if (frameCount % this.rnd.pick([75, 150]) == 0) {
@@ -151,7 +164,7 @@ export default class GameScene extends Phaser.Scene {
         isSensor: true,
         isStatic: true,
       });
-      this.align.scaleToGameHeight(digit, 0.04);
+      digit.scale = 0.91;
       this.aGrid.placeAt(5, 0.5, digit);
       digit.depth = 2;
       this.scoreGroup.add(digit);
@@ -160,14 +173,10 @@ export default class GameScene extends Phaser.Scene {
     const digits = this.scoreGroup.getChildren();
     digits.map((value, index) => {
       let digit = value as Phaser.Physics.Matter.Image;
-      let digitBody = digit.body as BodyType;
-      let digitWidth = digitBody.bounds.max.x - digitBody.bounds.min.x;
       if (digits[index - 1]) {
         let prevDigit = digits[index - 1] as Phaser.Physics.Matter.Image;
-        let prevDigitBody = prevDigit.body as BodyType;
-        let prevDigitWidth =
-          prevDigitBody.bounds.max.x - prevDigitBody.bounds.min.x;
-        digit.x = prevDigit.x + prevDigitWidth / 2 + digitWidth / 2;
+        digit.x =
+          prevDigit.x + prevDigit.displayWidth / 1.8 + digit.displayWidth / 1.8;
       }
     });
   }

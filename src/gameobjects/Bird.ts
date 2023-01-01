@@ -56,6 +56,7 @@ export default class Bird extends Phaser.Physics.Matter.Sprite {
       x: 0,
       y: (innerHeight / 1000) * -14,
     });
+
     this.play("fly");
   }
 }

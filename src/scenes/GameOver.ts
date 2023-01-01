@@ -1,4 +1,3 @@
-import { BodyType } from "matter";
 import Phaser from "phaser";
 
 import Align from "../utilities/align";
@@ -11,6 +10,8 @@ export default class GameOver extends Phaser.Scene {
   score!: number;
   bestScoreGroup!: Phaser.GameObjects.Group;
   scoreGroup!: Phaser.GameObjects.Group;
+  gameover!: Phaser.GameObjects.Image;
+  replay!: Phaser.GameObjects.Image;
   constructor() {
     super("game-over");
   }
@@ -34,48 +35,28 @@ export default class GameOver extends Phaser.Scene {
     this.load.image("replay", "assets/UI/replay.png");
   }
   create() {
-    const gameover = this.add.image(0, 0, "scoreboard");
-    this.align.scaleToGameHeight(gameover, 0.4);
-    this.align.center(gameover);
-    gameover.depth = 2;
+    this.gameover = this.add.image(0, 0, "scoreboard");
+    this.gameover.displayWidth = innerWidth * 0.6;
+    this.gameover.scaleY = this.gameover.scaleX;
+    this.align.center(this.gameover);
+    this.gameover.depth = 2;
 
-    const replay = this.add.image(0, 0, "replay");
-    this.align.scaleToGameHeight(replay, 0.08);
-    this.aGrid.placeAtIndex(82, replay);
-    replay.depth = 2;
+    this.replay = this.add.image(
+      this.gameover.x,
+      this.gameover.y + this.gameover.displayHeight / 2.5,
+      "replay"
+    );
+    this.replay.displayWidth = innerWidth * 0.25;
+    this.replay.scaleY = this.replay.scaleX;
+    this.replay.depth = 2;
+    //   this.aGrid.placeAtIndex(82, this.replay);
 
     this.updateBestScore();
     this.updateScore();
 
-    replay.setInteractive();
-    replay.on("pointerdown", () => {
+    this.replay.setInteractive();
+    this.replay.on("pointerdown", () => {
       this.scene.start("game-scene");
-    });
-  }
-  updateBestScore() {
-    const bestScore = this.bestScore.toString().split("");
-    bestScore.map((value) => {
-      let digit = this.matter.add.image(0, 0, `digit${value}`, 0, {
-        isSensor: true,
-        isStatic: true,
-      });
-      this.align.scaleToGameHeight(digit, 0.024);
-      this.aGrid.placeAt(7.3, 5.22, digit);
-      digit.depth = 2;
-      this.bestScoreGroup.add(digit);
-    });
-    const digits = this.bestScoreGroup.getChildren();
-    digits.map((value, index) => {
-      let digit = value as Phaser.Physics.Matter.Image;
-      let digitBody = digit.body as BodyType;
-      let digitWidth = digitBody.bounds.max.x - digitBody.bounds.min.x;
-      if (digits[index - 1]) {
-        let prevDigit = digits[index - 1] as Phaser.Physics.Matter.Image;
-        let prevDigitBody = prevDigit.body as BodyType;
-        let prevDigitWidth =
-          prevDigitBody.bounds.max.x - prevDigitBody.bounds.min.x;
-        prevDigit.x = prevDigit.x - prevDigitWidth / 2 - digitWidth / 2;
-      }
     });
   }
   updateScore() {
@@ -85,22 +66,48 @@ export default class GameOver extends Phaser.Scene {
         isSensor: true,
         isStatic: true,
       });
-      this.align.scaleToGameHeight(digit, 0.024);
-      this.aGrid.placeAt(7.3, 4.6, digit);
+      const gameover = this.gameover;
+      digit.scale = gameover.scale * 0.5;
+      digit.setPosition(
+        gameover.x + (gameover.displayWidth / 2) * 0.74,
+        gameover.y + (gameover.displayHeight / 2) * -0.18
+      );
       digit.depth = 2;
       this.scoreGroup.add(digit);
     });
     const digits = this.scoreGroup.getChildren();
-    digits.map((value, index) => {
+    digits.reverse().map((value, index) => {
       let digit = value as Phaser.Physics.Matter.Image;
-      let digitBody = digit.body as BodyType;
-      let digitWidth = digitBody.bounds.max.x - digitBody.bounds.min.x;
       if (digits[index - 1]) {
         let prevDigit = digits[index - 1] as Phaser.Physics.Matter.Image;
-        let prevDigitBody = prevDigit.body as BodyType;
-        let prevDigitWidth =
-          prevDigitBody.bounds.max.x - prevDigitBody.bounds.min.x;
-        prevDigit.x = prevDigit.x - prevDigitWidth / 2 - digitWidth / 2;
+        digit.x =
+          prevDigit.x - prevDigit.displayWidth / 1.8 - digit.displayWidth / 1.8;
+      }
+    });
+  }
+  updateBestScore() {
+    const bestScore = this.bestScore.toString().split("");
+    bestScore.map((value) => {
+      let digit = this.matter.add.image(0, 0, `digit${value}`, 0, {
+        isSensor: true,
+        isStatic: true,
+      });
+      const gameover = this.gameover;
+      digit.scale = gameover.scale * 0.5;
+      digit.setPosition(
+        gameover.x + (gameover.displayWidth / 2) * 0.74,
+        gameover.y + (gameover.displayHeight / 2) * 0.11
+      );
+      digit.depth = 2;
+      this.bestScoreGroup.add(digit);
+    });
+    const digits = this.bestScoreGroup.getChildren();
+    digits.reverse().map((value, index) => {
+      let digit = value as Phaser.Physics.Matter.Image;
+      if (digits[index - 1]) {
+        let prevDigit = digits[index - 1] as Phaser.Physics.Matter.Image;
+        digit.x =
+          prevDigit.x - prevDigit.displayWidth / 1.8 - digit.displayWidth / 1.8;
       }
     });
   }
