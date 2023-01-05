@@ -33,8 +33,12 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("birddownflap", "assets/GameObjects/birddownflap.png");
     this.load.image("birdmidflap", "assets/GameObjects/birdmidflap.png");
     this.load.image("birdupflap", "assets/GameObjects/birdupflap.png");
+    this.load.image("gamestart", "assets/UI/message.png");
+    this.load.image("gameover", "assets/UI/gameover.png");
     this.load.image("ground", "assets/base2.png");
     this.load.image("pipe", "assets/GameObjects/pipe.png");
+    this.load.image("scoreboard", "assets/UI/scoreboard.png");
+    this.load.image("replay", "assets/UI/replay.png");
     for (let i = 0; i <= 9; i++) {
       this.load.image(`${i}`, `assets/UI/Numbers/${i}.png`);
     }
@@ -51,6 +55,10 @@ export default class GameScene extends Phaser.Scene {
       "ground"
     );
     this.ground.sprite.depth = 1;
+
+    this.matter.add.rectangle(this.bg.x, -100, this.bg.displayWidth, 200, {
+      isStatic: true,
+    });
 
     this.bird = new Bird(this, this.gameWidth * 0.2, 200, "birdupflap", {
       birddownflap: "birddownflap",

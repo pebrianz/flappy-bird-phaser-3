@@ -16,11 +16,6 @@ export default class GameOver extends Phaser.Scene {
     this.bestScoreGroup = this.add.group();
     this.scoreGroup = this.add.group();
   }
-  preload() {
-    this.load.image("scoreboard", "assets/UI/scoreboard.png");
-    this.load.image("gameover", "assets/UI/gameover.png");
-    this.load.image("replay", "assets/UI/replay.png");
-  }
   create() {
     this.gameover = this.add.image(
       innerWidth / 2,

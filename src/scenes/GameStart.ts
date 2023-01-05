@@ -5,10 +5,6 @@ export default class GameStart extends Phaser.Scene {
   constructor() {
     super("game-start");
   }
-  init() {}
-  preload() {
-    this.load.image("gamestart", "assets/UI/message.png");
-  }
   create() {
     this.gamestart = this.add.image(
       innerWidth / 2,
