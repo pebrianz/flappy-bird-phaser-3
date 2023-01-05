@@ -7,51 +7,44 @@ import Pipe from "./Pipe";
 export default class Obstacle {
   pipeTop: Pipe;
   pipeBottom: Pipe;
+  posPipeTop = 0;
+  posPipeBottom = 0;
   sensor: BodyType;
   sensorHeight = 0;
-  space = 2.2;
-  speed = 8;
-  yy = Math.random() * 6;
+  space = 175;
+  speed = 4;
   constructor(public scene: GameScene, public texture: string) {
     const options: Phaser.Types.Physics.Matter.MatterBodyConfig = {
       isStatic: true,
     };
-    this.pipeTop = new Pipe(scene, scene.matter.world, texture, options);
-    this.pipeBottom = new Pipe(scene, scene.matter.world, texture, options);
-
-    if (this.scene.gameHeight > this.scene.gameWidth * 2) {
-      this.pipeTop.displayWidth = this.scene.gameWidth * 0.16;
-      this.pipeTop.scaleY = this.pipeTop.scaleX;
-      this.pipeBottom.displayWidth = this.scene.gameWidth * 0.16;
-      this.pipeBottom.scaleY = this.pipeBottom.scaleX;
-    } else {
-      this.pipeTop.displayHeight = this.scene.gameHeight * 0.85;
-      this.pipeTop.scaleX = this.pipeTop.scaleY;
-      this.pipeBottom.displayHeight = this.scene.gameHeight * 0.85;
-      this.pipeBottom.scaleX = this.pipeBottom.scaleY;
-    }
-    scene.aGrid.placeAtByOriginBottom(12, this.yy, this.pipeTop);
-    scene.aGrid.placeAtByOriginTop(12, this.yy + this.space, this.pipeBottom);
-
-    this.sensorHeight = scene.aGrid.height(this.space);
-    this.sensor = scene.matter.add.rectangle(
-      0,
-      0,
-      this.pipeTop.width,
-      this.sensorHeight,
-      {
-        isStatic: true,
-        isSensor: true,
-      }
+    this.posPipeTop = Math.floor(
+      Math.random() * (scene.bg.displayHeight - 300)
     );
-    scene.aGrid.placeBodyAt(scene, 12, this.yy + 1, this.sensor);
+    this.posPipeBottom = this.posPipeTop + this.space;
+
+    this.pipeTop = new Pipe(scene, 0, 0, texture, options);
+    this.pipeTop.setScale(2, 2);
+    this.pipeTop.placeAtWithOriginBottom(scene.gameWidth, this.posPipeTop);
+
+    this.pipeBottom = new Pipe(scene, 0, 0, texture, options);
+    this.pipeBottom.setScale(2, 2);
+    this.pipeBottom.placeAtWithOriginTop(scene.gameWidth, this.posPipeBottom);
+
+    this.sensor = scene.matter.add.rectangle(0, 0, 10, this.space, {
+      isStatic: true,
+      isSensor: true,
+    });
+    scene.matter.body.setPosition(this.sensor, {
+      x: this.pipeTop.x,
+      y: this.posPipeTop + this.space / 2,
+    });
   }
   update() {
     this.pipeTop.update(this.speed);
     this.pipeBottom.update(this.speed);
 
     this.scene.matter.body.translate(this.sensor, {
-      x: (this.scene.gameWidth / 1000) * -this.speed,
+      x: -this.speed,
       y: 0,
     });
   }

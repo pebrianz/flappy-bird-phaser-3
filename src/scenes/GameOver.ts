@@ -1,11 +1,6 @@
 import Phaser from "phaser";
 
-import Align from "../utilities/align";
-import AlignGrid from "../utilities/alignGrid";
-
 export default class GameOver extends Phaser.Scene {
-  align!: Align;
-  aGrid!: AlignGrid;
   bestScore!: number;
   score!: number;
   bestScoreGroup!: Phaser.GameObjects.Group;
@@ -16,14 +11,6 @@ export default class GameOver extends Phaser.Scene {
     super("game-over");
   }
   init(data: any) {
-    this.aGrid = new AlignGrid({
-      scene: this,
-      rows: 11,
-      cols: 11,
-      width: innerWidth,
-      height: innerHeight,
-    });
-    this.align = new Align(this);
     this.bestScore = data.bestScore;
     this.score = data.score;
     this.bestScoreGroup = this.add.group();
@@ -35,21 +22,20 @@ export default class GameOver extends Phaser.Scene {
     this.load.image("replay", "assets/UI/replay.png");
   }
   create() {
-    this.gameover = this.add.image(0, 0, "scoreboard");
-    this.gameover.displayWidth = innerWidth * 0.6;
-    this.gameover.scaleY = this.gameover.scaleX;
-    this.align.center(this.gameover);
+    this.gameover = this.add.image(
+      innerWidth / 2,
+      innerHeight / 2,
+      "scoreboard"
+    );
+    this.gameover.scale = 1.1;
     this.gameover.depth = 2;
 
     this.replay = this.add.image(
       this.gameover.x,
-      this.gameover.y + this.gameover.displayHeight / 2.5,
+      this.gameover.y + this.gameover.displayHeight / 2.1,
       "replay"
     );
-    this.replay.displayWidth = innerWidth * 0.25;
-    this.replay.scaleY = this.replay.scaleX;
     this.replay.depth = 2;
-    //   this.aGrid.placeAtIndex(82, this.replay);
 
     this.updateBestScore();
     this.updateScore();
@@ -88,7 +74,7 @@ export default class GameOver extends Phaser.Scene {
   updateBestScore() {
     const bestScore = this.bestScore.toString().split("");
     bestScore.map((value) => {
-      let digit = this.matter.add.image(0, 0, `digit${value}`, 0, {
+      let digit = this.matter.add.image(0, 0, `${value}`, 0, {
         isSensor: true,
         isStatic: true,
       });

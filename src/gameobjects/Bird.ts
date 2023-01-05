@@ -13,17 +13,18 @@ export default class Bird extends Phaser.Physics.Matter.Sprite {
   public inertia = 0;
   constructor(
     public scene: GameScene,
-    public world: Phaser.Physics.Matter.World,
+    public x: number,
+    public y: number,
     public texture: any,
     public framesKey: FramesKey,
     public options?: Phaser.Types.Physics.Matter.MatterBodyConfig
   ) {
-    super(world, 0, 0, texture, 0, options);
+    super(scene.matter.world, x, y, texture, 0, options);
     const { birdupflap, birdmidflap, birddownflap } = framesKey;
 
     this.setBody({
       type: "circle",
-      radius: 10,
+      radius: 12,
     });
 
     const body = this.body as BodyType;
@@ -45,18 +46,11 @@ export default class Bird extends Phaser.Physics.Matter.Sprite {
     });
     scene.add.existing(this);
   }
-  scaleToGameHeight(per: number) {
-    this.displayHeight = this.scene.gameHeight * per;
-    this.scaleX = this.scaleY;
-    const body = this.body as BodyType;
-    this.inertia = body.inertia;
-  }
   fly() {
     this.scene.matter.body.setVelocity(this.body as BodyType, {
       x: 0,
-      y: (innerHeight / 1000) * -14,
+      y: -10,
     });
-
     this.play("fly");
   }
 }
