@@ -48,7 +48,7 @@ export default class GameOver extends Phaser.Scene {
   updateScore() {
     const score = this.score.toString().split("");
     score.map((value) => {
-      let digit = this.matter.add.image(0, 0, `digit${value}`, 0, {
+      let digit = this.matter.add.image(0, 0, `${value}`, 0, {
         isSensor: true,
         isStatic: true,
       });
