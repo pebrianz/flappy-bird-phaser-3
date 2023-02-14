@@ -11,8 +11,8 @@ export default class Obstacle {
   posPipeBottom = 0;
   sensor: BodyType;
   sensorHeight = 0;
-  space = 175;
-  speed = 4;
+  space = 165;
+  speed = 3.4;
   constructor(public scene: GameScene, public texture: string) {
     const options: Phaser.Types.Physics.Matter.MatterBodyConfig = {
       isStatic: true,
@@ -23,11 +23,11 @@ export default class Obstacle {
     this.posPipeBottom = this.posPipeTop + this.space;
 
     this.pipeTop = new Pipe(scene, 0, 0, texture, options);
-    this.pipeTop.setScale(2, 2);
+    this.pipeTop.setScale(1.9, 1.9);
     this.pipeTop.placeAtWithOriginBottom(scene.gameWidth, this.posPipeTop);
 
     this.pipeBottom = new Pipe(scene, 0, 0, texture, options);
-    this.pipeBottom.setScale(2, 2);
+    this.pipeBottom.setScale(1.9, 1.9);
     this.pipeBottom.placeAtWithOriginTop(scene.gameWidth, this.posPipeBottom);
 
     this.sensor = scene.matter.add.rectangle(0, 0, 10, this.space, {

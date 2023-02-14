@@ -22,7 +22,7 @@ export default class GameOver extends Phaser.Scene {
       innerHeight / 2,
       "scoreboard"
     );
-    this.gameover.scale = 1.1;
+    this.gameover.scale = 0.9;
     this.gameover.depth = 2;
 
     this.replay = this.add.image(

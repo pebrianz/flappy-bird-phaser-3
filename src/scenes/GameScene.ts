@@ -45,7 +45,7 @@ export default class GameScene extends Phaser.Scene {
   }
   create() {
     this.bg = this.add.tileSprite(this.gameWidth / 2, 0, 0, 0, "background");
-    this.bg.scale = 2.6;
+    this.bg.scale = 2.2;
     this.bg.setOrigin(0.5, 0);
 
     this.ground = new Ground(
@@ -65,13 +65,13 @@ export default class GameScene extends Phaser.Scene {
       birdmidflap: "birdmidflap",
       birdupflap: "birdupflap",
     });
-    this.bird.scale = 1.35;
+    this.bird.scale = 1.15;
     this.bird.setFixedRotation();
     this.input.on("pointerdown", () => this.bird.fly());
 
     const digit = this.add.image(this.gameWidth / 2, 75, `0`);
     digit.depth = 2;
-    digit.scale = 0.91;
+    digit.scale = 0.71;
     this.scoreGroup.add(digit);
 
     this.fps = this.add.text(this.gameWidth * 0.15, 75, "", {
@@ -85,8 +85,8 @@ export default class GameScene extends Phaser.Scene {
     this.scene.launch("game-start");
   }
   update() {
-    this.bg.tilePositionX += 1;
-    this.ground.sprite.tilePositionX += 4;
+    this.bg.tilePositionX += 0.8;
+    this.ground.sprite.tilePositionX += 3.4;
 
     const frameCount = this.game.getFrame();
     if (frameCount % this.rnd.pick([75, 150]) === 0) {
@@ -131,7 +131,7 @@ export default class GameScene extends Phaser.Scene {
         isSensor: true,
         isStatic: true,
       });
-      digit.scale = 0.91;
+      digit.scale = 0.71;
       digit.depth = 2;
       this.scoreGroup.add(digit);
     });

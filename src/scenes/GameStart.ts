@@ -11,7 +11,7 @@ export default class GameStart extends Phaser.Scene {
       innerHeight / 2,
       "gamestart"
     );
-    this.gamestart.scale = 1.1;
+    this.gamestart.scale = 0.9;
     this.input.on("pointerdown", () => {
       this.gamestart.destroy();
       this.scene.resume("game-scene");
