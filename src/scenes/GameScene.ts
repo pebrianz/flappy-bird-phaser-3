@@ -65,7 +65,7 @@ export default class GameScene extends Phaser.Scene {
       birdmidflap: "birdmidflap",
       birdupflap: "birdupflap",
     });
-    this.bird.scale = 1.15;
+    this.bird.scale = 1.2;
     this.bird.setFixedRotation();
     this.input.on("pointerdown", () => this.bird.fly());
 
@@ -141,6 +141,7 @@ export default class GameScene extends Phaser.Scene {
       let digit = value as Phaser.Physics.Matter.Image;
       if (digits[index - 1]) {
         let prevDigit = digits[index - 1] as Phaser.Physics.Matter.Image;
+        prevDigit.x = prevDigit.x - (prevDigit.displayWidth / 1.8) * 2;
         digit.x =
           prevDigit.x + prevDigit.displayWidth / 1.8 + digit.displayWidth / 1.8;
       }
